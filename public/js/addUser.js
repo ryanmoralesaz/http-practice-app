@@ -1,15 +1,19 @@
-import { showUsers } from './utils/showUsers.js';
+import {
+  updateSessionStorageWithUsers,
+  retrieveSessionStorageUsers,
+  renderUsers
+} from './renderUsers.js';
 document
   .getElementById('addUserForm')
   .addEventListener('submit', function (event) {
     event.preventDefault();
-    let users = JSON.parse(sessionStorage.getItem('users') || '[]');
+    const users = retrieveSessionStorageUsers();
     const name = this.name.value;
     const age = parseInt(this.age.value);
     const formData = { name: name, age: age };
     users.push(formData);
-    sessionStorage.setItem('users', JSON.stringify(users));
-    showUsers(users);
+    updateSessionStorageWithUsers(users);
+    renderUsers(users);
     fetch('http://localhost:3000/api/add-user', {
       method: 'POST',
       headers: {
@@ -22,8 +26,8 @@ document
         console.log('success', data);
         let newUser = { id: data.newId, ...users[users.length - 1] };
         users[users.length - 1] = newUser;
-        showUsers(users);
-        sessionStorage.setItem('users', JSON.stringify(users));
+        renderUsers(users);
+        updateSessionStorageWithUsers(users);
       })
       .catch((error) => {
         console.error('Error adding user:', error);
@@ -32,8 +36,8 @@ document
   });
 
 function rollBackUserAdd(formData) {
-  let users = JSON.parse(sessionStorage.getItem('users') || '[]');
+  const users = retrieveSessionStorageUsers();
   users = users.filter((user) => user.name != formData.name);
-  sessionStorage.setItem('users', JSON.stringify(users));
-  showUsers(users);
+  updateSessionStorageWithUsers(users);
+  renderUsers(users);
 }

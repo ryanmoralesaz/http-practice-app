@@ -21,7 +21,7 @@ app.use(cors());
 // Set the default port for the server to listen on.
 // If the PORT environment variable is set, use that value, otherwise use 3000.
 const PORT = process.env.PORT || 3000;
-
+const usersPath = path.join(__dirname, 'users.json');
 // Use the express.static middleware to serve static files.
 // This line tells Express to serve static files from the 'public' directory.
 // `path.join` is used to construct a path to the public directory relative to this script.
@@ -53,7 +53,7 @@ app.post('/api/add-user', (req, res) => {
   // add a uuid to the new user
   const newUser = { id: newUUID, ...req.body };
   // Read the existing users from the users.json file
-  fs.readFile(path.join(__dirname, 'users.json'), 'utf-8', (err, data) => {
+  fs.readFile(usersPath, 'utf-8', (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: 'Failed to read file' });
@@ -62,29 +62,46 @@ app.post('/api/add-user', (req, res) => {
     const users = JSON.parse(data);
     // Add a new user to the array of users
     users.push(newUser);
-    // Write the updated array of users back to the file
-    fs.writeFile(
-      path.join(__dirname, 'users.json'),
-      JSON.stringify(users, null, 2),
-      (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ error: 'Failed to write file' });
-        }
-        // Send a response back to the client
-        res
-          .status(201)
-          .json({ message: 'User added successfully', newId: newUUID });
+    // Write the updatedh array of users back to the file
+    fs.writeFile(usersPath, JSON.stringify(users, null, 2), (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to write file' });
       }
-    );
+      // Send a response back to the client
+      res
+        .status(201)
+        .json({ message: 'User added successfully', newId: newUUID });
+    });
   });
 });
 // create the delete-user route to delete a user
 app.delete('/api/delete-user/:id', (req, res) => {
   const userID = req.params.id;
   console.log('selected user is :', userID);
-  fs.readFile('', '', () => {
-    fs.writeFile('', '', () => {});
+  // specify the correct file path for `fs.readFile`
+  // fill in the correct parameters to read `users.json`
+  // handle a read error
+  // udpate the users array by filtering out deleted user
+  // write the update array back tho the file
+  // make sure to handle appropriate user errors
+  fs.readFile(usersPath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to read file' });
+    }
+    const users = JSON.parse(data);
+    const filteredUsers = users.filter((user) => {
+      return user.id !== userID;
+    });
+    fs.writeFile(usersPath, JSON.stringify(filteredUsers, null, 2), (err) => {
+      if (err) {
+        console.err('there was an error writing to file', err);
+        return res.status(500).json({
+          error: 'failed to write to file'
+        });
+      }
+    });
     res.json({ success: true, message: 'user was chosen', id: userID });
   });
 });
