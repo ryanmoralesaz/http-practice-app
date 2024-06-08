@@ -1,0 +1,21 @@
+{
+  "name": "http-practice",
+  "version": "1.0.0",
+  "description": "1. Make a front end folder",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec 'node server/app.js' --ignore 'public/*.*' & browser-sync start --proxy 'localhost:3000' --files 'public/**/*, server/users.json, server/app.js' --no-open",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Ryan Morales",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}
