@@ -1,6 +1,8 @@
-let toggledUsers = JSON.parse(sessionStorage.getItem('toggledUsers')) || {};
+import { retrieveSessionStorageUsers, renderUsers } from './renderUsers.js';
 
 function toggleEdit(userID) {
+  console.log('toggling');
+  let toggledUsers = JSON.parse(sessionStorage.getItem('toggledUsers')) || {};
   if (toggledUsers[userID]) {
     return;
   } else {
@@ -8,11 +10,11 @@ function toggleEdit(userID) {
     sessionStorage.setItem('toggledUsers', JSON.stringify(toggledUsers));
   }
   // cache the user List item
-  const userItem = document.querySelector(`[data-user-id="${userID}"`);
+  const userItem = document.querySelector(`[data-user-id="${userID}"]`);
   // cache the usernamespan by className query
-  const userNameSpan = document.querySelector('.username');
+  const userNameSpan = userItem.querySelector('.username');
   // cache the useragespan by className query
-  const userAgeSpan = document.querySelector('.userage');
+  const userAgeSpan = userItem.querySelector('.userage');
 
   // create a name input element
   const userNameInput = document.createElement('input');
@@ -29,6 +31,7 @@ function toggleEdit(userID) {
   userAgeInput.type = 'number';
   // make the value the current agespan  text content
   userAgeInput.value = userAgeSpan.textContent;
+  console.log('showing age', userAgeSpan.textContent);
   // replace the name span by capturing the parent node
   userAgeSpan.parentNode.replaceChild(userAgeInput, userAgeSpan);
 
@@ -65,4 +68,14 @@ function submitEdit(userID, name, age) {
 
 function updateUIafterEdit(userID, name, age) {}
 
+function revertEditChanges(userID) {
+  let users = retrieveSessionStorageUsers();
+  let user = users.find((user) => user.id === userID);
+  if (user) {
+    updateUIafterEdit(userID, user.name, user.age);
+    let toggledUsers = JSON.parse(sessionStorage.getItem('toggledUsers')) || {};
+    delete toggledUsers[userID];
+    sessionStorage.setItem('toggledUsers', JSON.stringify(toggledUsers));
+  }
+}
 export { toggleEdit };

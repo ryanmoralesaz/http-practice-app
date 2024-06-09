@@ -1,15 +1,19 @@
-import {retrieveSessionStorageUsers, updateSessionStorageWithUsers} from './renderUsers.js';
-const userList = document.getElementById('user-list');
-if (userList.innerHTML) {
-  userList.addEventListener('click', function (event) {
-    if (event.target.classList.contains('delete-user')) {
-      console.log(event.target.parentNode.parentNode);
-      const userID =
-        event.target.parentNode.parentNode.getAttribute('data-user-id');
-      deleteUser(userID);
-    }
-  });
-}
+import {
+  renderUsers,
+  retrieveSessionStorageUsers,
+  updateSessionStorageWithUsers
+} from './renderUsers.js';
+// const userList = document.getElementById('user-list');
+// if (userList.innerHTML) {
+//   userList.addEventListener('click', function (event) {
+//     if (event.target.classList.contains('delete-user')) {
+//       console.log(event.target.parentNode.parentNode);
+//       const userID =
+//         event.target.parentNode.parentNode.getAttribute('data-user-id');
+//       deleteUser(userID);
+//     }
+//   });
+// }
 
 function deleteUser(userID) {
   fetch(`/api/delete-user/${userID}`, { method: 'DELETE' })
@@ -42,7 +46,7 @@ function removeUserFromUI(userID) {
 function updateSessionStorageAfterDelete(userID) {
   // retrieve the current list of users form S.S.
   // parse the JSON from session storage into an array
-    const users = retrieveSessionStorageUsers();
+  const users = retrieveSessionStorageUsers();
   // filter out the user with the provided 'userID'
   // use Array.filter() to remove the user
   const filteredUsers = users.filter((user) => {
@@ -50,5 +54,8 @@ function updateSessionStorageAfterDelete(userID) {
   });
   // update session storage with the new list
   // stringify the array and save it back to storage
-    updateSessionStorageAfterDelete(filteredUsers);
+  updateSessionStorageWithUsers(filteredUsers);
+  renderUsers(filteredUsers);
 }
+
+export { deleteUser, removeUserFromUI, updateSessionStorageAfterDelete };

@@ -1,0 +1,5 @@
+GET http://localhost:3000/api/items?you=me&me=you
+Accept: application/json
+
+###
+

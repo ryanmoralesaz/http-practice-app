@@ -1,5 +1,6 @@
 import { updateSessionStorageWithUsers, renderUsers } from './renderUsers.js';
-window.onload = function () {
+
+function getUsers() {
   fetch('http://127.0.0.1:3000/api/users')
     // put content headers in fetch call
     .then((response) => response.json()) //why does response get sent to json?
@@ -9,4 +10,8 @@ window.onload = function () {
       renderUsers(users);
     })
     .catch((error) => console.error('Error fetching data:', error));
-};
+}
+
+// window.onload = function () {
+  getUsers();
+// };

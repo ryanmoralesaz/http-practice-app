@@ -7,6 +7,8 @@ const path = require('path');
 const fs = require('fs');
 // require cors to deal with front end to back end calls
 const cors = require('cors');
+// require helmet for CSP
+const helmet = require('helmet');
 // require UUID for unique keys
 const { v4: uuidv4 } = require('uuid');
 // Create an instance of an Express application.
@@ -18,6 +20,19 @@ app.use(cors());
 // app.use(cors({
 //   origin: 'http://127.0.0.1:5500'  // Allow only this origin to access
 // }));
+// configure helmet
+// Configuring Helmet with CSP
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"], // Default setting for all sources. 'self' refers to the same origin.
+        connectSrc: ["'self'", 'http://127.0.0.1:3000'] // Allow connections to the server itself and the local API
+        // Add other resource-specific directives as needed
+      }
+    }
+  })
+);
 // Set the default port for the server to listen on.
 // If the PORT environment variable is set, use that value, otherwise use 3000.
 const PORT = process.env.PORT || 3000;
@@ -104,6 +119,49 @@ app.delete('/api/delete-user/:id', (req, res) => {
     });
     res.json({ success: true, message: 'user was chosen', id: userID });
   });
+});
+
+const statusCodes = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../config/statusCodes.json'), 'utf8')
+);
+// practice routes
+//// establish some basic routes to practice http verbs
+app.get('/api/items', (req, res) => {
+  const query = req.query;
+  console.log('query was', query);
+  res
+    .status(statusCodes.OK.statusCode)
+    .json({ message: 'Get request received for items' });
+});
+app.post('/api/items', (req, res) => {
+  const body = req.body;
+  console.log(body);
+  // simulate a bad request for an empty body
+  if (Object.keys(body).length === 0) {
+    throw new Error('Bad_Request');
+  }
+  res.status(statusCodes.CREATED.statusCode).send('Post received with data');
+});
+app.put('/api/items/:id', (req, res) => {
+  const itemID = req.params.id;
+  const body = req.body;
+  console.log(`updating item ${itemID} with data`, body);
+  res
+    .status(statusCodes.OK.statusCode)
+    .send(`PUT request received for item ${itemID}`);
+});
+app.delete('/api/items/:id', (req, res) => {
+  const itemID = req.params.id;
+  console.log(`deleting item ${itemID}`);
+  res
+    .status(statusCodes.OK.statusCode)
+    .send(`DELETE request received for item ${itemID}`);
+});
+// central error handling route
+app.use((err, req, res, next) => {
+  const error =
+    statusCodes[err.message] || statusCodes['INTERNAL_SERVER_ERROR'];
+  res.status(error.statusCode).send({ error: error.message });
 });
 // Start the server on the specified PORT.
 // This makes the server listen for incoming requests on the defined PORT.

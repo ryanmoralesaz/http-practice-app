@@ -1,0 +1,54 @@
+{
+    "CONTINUE": {
+        "statusCode": 100,
+        "message": "headers received, continue to body send"
+    },
+    "SWITCH": {
+        "statusCode": 101,
+        "message": "request was made to switch server protocol"
+    },
+    "PROCESSING": {
+        "statusCode": 102,
+        "message": "process has not yet completed"
+    },
+  "OK": {
+    "statusCode": 200,
+    "message": "Success"
+  },
+  "CREATED": {
+    "statusCode": 201,
+    "message": "Resource created successfully"
+  },
+  "ACCEPTED": {
+    "statusCode": 202,
+    "message": "request was accepted, processing"
+  },
+  "MOVED": {
+    "statusCode": 301,
+    "message": "The requested resource has been permanently moved"
+  },
+  "CHANGED": {
+    "statusCode": 302,
+    "message": "The URI has been changed temporarily"
+  },
+  "BAD_REQUEST": {
+    "statusCode": 400,
+    "message": "Bad request"
+  },
+  "NOT_FOUND": {
+    "statusCode": 404,
+    "message": "Resource not found"
+  },
+  "INTERNAL_SERVER_ERROR": {
+    "statusCode": 500,
+    "message": "Internal server error"
+  },
+  "NOT_IMPLEMENTED": {
+    "statusCode": 501,
+    "message": "The server cannot fulfill the request"
+  },
+  "SERVICE_UNAVAILABLE": {
+    "statusCode": 503,
+    "message": "The server is currently unavailable (overloaded or down for maintenance)"
+  }
+}

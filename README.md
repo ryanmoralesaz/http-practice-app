@@ -10,3 +10,4 @@
 7. install UUID to handle unique ids of object items `npm i uuid`
 8. install nodemon to watch for changes in the server `npm i --save-dev nodemon`
 9. install browser sync to watch for live changes `npm i -g browser-sync`
+10. install helmet to help with content security policy(CSP)
