@@ -1,5 +1,6 @@
 GET http://localhost:3000/api/items?you=me&me=you
 Accept: application/json
 
-###
-
+### Delete Request
+DELETE http://localhost:3000/api/delete-user/3
+Accept: application/json

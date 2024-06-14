@@ -92,7 +92,7 @@ app.post('/api/add-user', (req, res) => {
 });
 // create the delete-user route to delete a user
 app.delete('/api/delete-user/:id', (req, res) => {
-  const userID = req.params.id;
+  const userID = req.params.id.toString();
   console.log('selected user is :', userID);
   // specify the correct file path for `fs.readFile`
   // fill in the correct parameters to read `users.json`
@@ -107,7 +107,7 @@ app.delete('/api/delete-user/:id', (req, res) => {
     }
     const users = JSON.parse(data);
     const filteredUsers = users.filter((user) => {
-      return user.id !== userID;
+      return user.id.toString() !== userID;
     });
     fs.writeFile(usersPath, JSON.stringify(filteredUsers, null, 2), (err) => {
       if (err) {
